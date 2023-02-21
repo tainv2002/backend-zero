@@ -1,9 +1,9 @@
 const db = require("../config/database");
-const { getAllUsers } = require("../services/CRUDService");
+const User = require("../models/user");
 
 class HomeController {
     async index(req, res, next) {
-        const users = await getAllUsers();
+        const users = await User.find({});
         res.render("home", {
             users,
         });

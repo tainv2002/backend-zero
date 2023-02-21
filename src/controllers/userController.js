@@ -1,15 +1,13 @@
-const db = require("../config/database");
-const {
-    addUser,
-    getUser,
-    editUser,
-    deleteUser,
-} = require("../services/CRUDService");
+const User = require("../models/user");
 
 class UserController {
     // [POST] /users/create
     async create(req, res, next) {
-        await addUser(req.body);
+        await User.create({
+            email: req.body.email,
+            name: req.body.name,
+            city: req.body.city,
+        });
         res.redirect("/");
     }
 
@@ -20,25 +18,29 @@ class UserController {
 
     // [GET] /users/:id/edit
     async edit(req, res, next) {
-        const user = await getUser(req.params.id);
+        const user = await User.findById(req.params.id);
         res.render("editUser", { user });
     }
 
     // [POST] /users/:id/edit
     async update(req, res, next) {
-        await editUser({ ...req.body, id: req.params.id });
+        await User.findByIdAndUpdate(req.params.id, {
+            email: req.body.email,
+            name: req.body.name,
+            city: req.body.city,
+        });
         res.redirect("/");
     }
 
     // [GET] /users/:id/delete
     async delete(req, res, next) {
-        const user = await getUser(req.params.id);
+        const user = await User.findById(req.params.id);
         res.render("deleteUser", { user });
     }
 
     // [POST] /users/:id/delete
     async destroy(req, res, next) {
-        await deleteUser(req.params.id);
+        await User.findByIdAndDelete(req.params.id);
         res.redirect("/");
     }
 }
